@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solecito</title>
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#f7f9fc"/>
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Solecito" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- iOS Splash screens -->
+  <link rel="apple-touch-startup-image" href="icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+  <link rel="apple-touch-startup-image" href="icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+  <link rel="apple-touch-startup-image" href="icons/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+  <link rel="apple-touch-startup-image" href="icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+  <link rel="apple-touch-startup-image" href="icons/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+
+  <style>
+    body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f7f9fc,#dbe6ec);overflow:hidden;}
+    .flower{position:relative;width:220px;height:520px;display:flex;align-items:flex-end;justify-content:center;animation:sway 6s ease-in-out infinite;}
+    .flower svg{width:100%;height:100%;overflow:visible;}
+    @keyframes sway{0%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-6px)}100%{transform:rotate(-2deg) translateY(0)}}
+    .petal{transform-origin:50% 70%;animation:petalPulse 3.6s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.25));}
+    @keyframes petalPulse{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+    .center{animation:centerGlow 3s ease-in-out infinite;}
+    @keyframes centerGlow{0%{transform:scale(1)}50%{transform:scale(1.05);filter:drop-shadow(0 0 8px rgba(255,200,80,0.3))}100%{transform:scale(1)}}
+    .message{margin-top:20px;font-size:1.2rem;font-weight:bold;color:#444;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;text-align:center;}
+  </style>
+</head>
+<body>
+  <div class="flower">
+    <svg viewBox="0 0 200 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g transform="translate(100,580)">
+        <path d="M0 0 C10 -100 15 -350 0 -500" stroke="#2a6d36" stroke-width="12" fill="none" stroke-linecap="round" />
+      </g>
+      <g transform="translate(100,400)">
+        <path d="M0 0 C-60 -30 -80 -80 -20 -100" fill="#3d8b4b" />
+      </g>
+      <g transform="translate(100,450) scale(-1,1)">
+        <path d="M0 0 C-60 -30 -80 -80 -20 -100" fill="#3d8b4b" />
+      </g>
+      <g class="petals" transform="translate(100,120)"></g>
+    </svg>
+  </div>
+  <div class="message">Una gerbera para ti Solecito</div>
+
+  <script>
+    const petalPath='M0 -20 C25 -60 55 -80 85 -60 C110 -40 115 -10 90 10 C60 35 25 45 0 40 C-25 35 -60 20 -90 0 C-115 -20 -95 -55 -65 -70 C-40 -85 -10 -70 0 -20 Z';
+    function makePetal(index,total){
+      const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('transform',`rotate(${(360/total)*index})`);
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',petalPath);
+      path.setAttribute('class','petal');
+      path.setAttribute('fill', index%2===0?'#ffd54a':'#ffeb7a');
+      g.appendChild(path);
+      return g;
+    }
+    const petalsGroup=document.querySelector('.petals');
+    for(let i=0;i<20;i++) petalsGroup.appendChild(makePetal(i,20));
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx','100'); c.setAttribute('cy','120'); c.setAttribute('r','22');
+    c.setAttribute('fill','#f2b233'); c.setAttribute('class','center');
+    document.querySelector('svg').appendChild(c);
+
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registrado'));
+    }
+  </script>
+</body>
+</html>
